@@ -1,6 +1,7 @@
-import { resolve } from 'node:path';
+import path, { resolve } from 'node:path';
 import { URL, fileURLToPath } from 'node:url';
 
+import fs from 'node:fs';
 import VueI18n from '@intlify/unplugin-vue-i18n/vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
@@ -17,7 +18,8 @@ import markdown from 'vite-plugin-vue-markdown';
 import svgLoader from 'vite-svg-loader';
 import { configDefaults } from 'vitest/config';
 
-import { ssr } from 'vite-plugin-ssr/plugin';
+// import { ssr } from 'vite-plugin-ssr/plugin';
+import html from '@rollup/plugin-html';
 
 const baseUrl = process.env.BASE_URL ?? '/';
 
@@ -56,51 +58,15 @@ export default defineConfig({
     vueJsx(),
     markdown(),
     svgLoader(),
-    // VitePWA({
-    //   registerType: 'autoUpdate',
-    //   strategies: 'generateSW',
-    //   manifest: {
-    //     name: 'Zeeklog Online Tools',
-    //     description: 'Aggregated set of useful tools for developers.',
-    //     display: 'standalone',
-    //     lang: 'fr-FR',
-    //     start_url: `${baseUrl}?utm_source=pwa&utm_medium=pwa`,
-    //     orientation: 'any',
-    //     theme_color: '#18a058',
-    //     background_color: '#f1f5f9',
-    //     icons: [
-    //       {
-    //         src: '/favicon-16x16.png',
-    //         type: 'image/png',
-    //         sizes: '16x16',
-    //       },
-    //       {
-    //         src: '/favicon-32x32.png',
-    //         type: 'image/png',
-    //         sizes: '32x32',
-    //       },
-    //       {
-    //         src: '/android-chrome-192x192.png',
-    //         sizes: '192x192',
-    //         type: 'image/png',
-    //       },
-    //       {
-    //         src: '/android-chrome-512x512.png',
-    //         sizes: '512x512',
-    //         type: 'image/png',
-    //         purpose: 'any maskable',
-    //       },
-    //     ],
-    //   },
-    // }),
     Components({
       dirs: ['src/'],
       extensions: ['vue', 'md'],
       include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
       resolvers: [NaiveUiResolver(), IconsResolver({ prefix: 'icon' })],
     }),
+    html(),
     Unocss(),
-    ssr(),
+    // ssr(),
   ],
   base: baseUrl,
   resolve: {
@@ -116,13 +82,13 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    rollupOptions: {
-      // 指定入口文件
-      input: {
-        main: './src/entry-client.ts',
-        // 你也可以在这里指定服务器端入口，例如：
-        server: './src/entry-server.ts',
-      },
-    },
+    // rollupOptions: {
+    //   // 指定入口文件
+    //   // input: './src/entry-client.ts',
+    //   // main: './src/entry-client.ts',
+    //   // 你也可以在这里指定服务器端入口，例如：
+    //   // server: './src/entry-server.ts',
+    //   // },
+    // },
   },
 });

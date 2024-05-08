@@ -18,20 +18,20 @@ async function startServer() {
     server: { middlewareMode: true },
   });
 
-  // 使用Vite的中间件
-  app.use(vite.middlewares);
 
   if (isProd) {
+    app.use(vite.middlewares);
     // 生产环境: 提供构建后的静态资源
-    app.use(express.static(resolve('dist/client'), { index: false }));
-
-    app.use('*', async (req, res) => {
+    app.use(express.static(path.join(__dirname, 'dist', 'client'), { index: false }));
+    app.use('/', async (req, res) => {
       let indexHtml = fs.readFileSync(resolve('dist/client/index.html'), 'utf-8');
-      indexHtml = await vite.transformIndexHtml(req.originalUrl, indexHtml);
+      // indexHtml = await vite.transformIndexHtml(req.originalUrl, indexHtml);
       res.status(200).set({ 'Content-Type': 'text/html' }).end(indexHtml);
     });
   }
   else {
+    // 使用Vite的中间件
+    app.use(vite.middlewares);
     app.use('*', async (req, res) => {
       try {
         // 读取index.html文件
